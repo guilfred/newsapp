@@ -1,0 +1,5 @@
+# api/config/packages/api_platform.yaml
+api_platform:
+    title: 'API title'
+    description: 'Newsapp description'
+    version: '1.0.0'
