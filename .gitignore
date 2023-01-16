@@ -11,4 +11,5 @@
 ###> .env ###
 /.idea/
 /migrations/*
+/composer.lock
 ###< .env ###
