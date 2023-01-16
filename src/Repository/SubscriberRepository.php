@@ -39,28 +39,13 @@ class SubscriberRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return Subscriber[] Returns an array of Subscriber objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('s')
-//            ->andWhere('s.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('s.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    public function unsubscribe(Subscriber $subscriber)
+    {
+        $subscriber
+            ->setEnabled(false)
+            ->setSubscribAt(new \DateTimeImmutable())
+        ;
 
-//    public function findOneBySomeField($value): ?Subscriber
-//    {
-//        return $this->createQueryBuilder('s')
-//            ->andWhere('s.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+        $this->_em->flush();
+    }
 }

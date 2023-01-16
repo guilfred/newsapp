@@ -7,7 +7,11 @@ use App\Repository\GroupeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
+#[UniqueEntity('title')]
+#[UniqueEntity('role')]
 #[ORM\Entity(repositoryClass: GroupeRepository::class)]
 #[ApiResource]
 class Groupe
@@ -17,10 +21,14 @@ class Groupe
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, unique: true)]
     private ?string $title = null;
 
-    #[ORM\Column(length: 255)]
+    #[Assert\Regex(
+        pattern: '/^ROLE_/',
+        message: 'Le rôle ne respecte pas les conditions !',
+    )]
+    #[ORM\Column(length: 255, unique: true)]
     private ?string $role = null;
 
     #[ORM\OneToMany(mappedBy: 'groupe', targetEntity: User::class)]

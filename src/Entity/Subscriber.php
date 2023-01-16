@@ -20,8 +20,12 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Post(
             denormalizationContext: ['groups' => ['Post:Subscriber']]
         ),
-        new GetCollection(),
-        new Get(),
+        new GetCollection(
+            security: "is_granted('ROLE_SUPER_ADMIN')"
+        ),
+        new Get(
+            security: "is_granted('ROLE_ADMIN')"
+        ),
         new Get(
             uriTemplate: '/unsubscribe',
             controller: UnsubscribeAction::class,
@@ -33,6 +37,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Subscriber
 {
     const TOKEN_LENGTH = 50;
+    const UNSUBSCRIBE_FAILED = 'Unsubscribe failed !';
+    const UNSUBSCRIBE_SUCCESS = 'Unsubscribe successfully !';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
