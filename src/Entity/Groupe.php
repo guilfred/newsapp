@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
 use App\Repository\GroupeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -13,7 +15,13 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[UniqueEntity('title')]
 #[UniqueEntity('role')]
 #[ORM\Entity(repositoryClass: GroupeRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    operations: [
+        new Get(),
+        new GetCollection()
+    ],
+    security: "is_granted('ROLE_SUPER_ADMIN')"
+)]
 class Groupe
 {
     #[ORM\Id]
