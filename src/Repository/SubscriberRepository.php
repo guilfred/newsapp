@@ -43,7 +43,7 @@ class SubscriberRepository extends ServiceEntityRepository
     {
         $subscriber
             ->setEnabled(false)
-            ->setSubscribAt(new \DateTimeImmutable())
+            ->setUnsubscribAt(new \DateTimeImmutable())
         ;
 
         $this->_em->flush();

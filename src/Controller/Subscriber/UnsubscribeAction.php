@@ -21,17 +21,17 @@ class UnsubscribeAction extends AbstractController
         $token = $request->query->get('token');
         $action = $request->query->get('action');
 
-        if ($action !== 'unsubscribe') {
-            return new Response(Subscriber::UNSUBSCRIBE_FAILED);
+        if (!isset($token) || !isset($action) || $action !== 'unsubscribe') {
+            return $this->json(['message' => Subscriber::UNSUBSCRIBE_FAILED]);
         }
 
         $subscriber = $subscriberRepository->findOneBy(['tokenID' => $token]);
         if (!$subscriber) {
-            return new Response(Subscriber::UNSUBSCRIBE_FAILED);
+            return $this->json(['message' => Subscriber::UNSUBSCRIBE_FAILED]);
         }
 
         $subscriberRepository->unsubscribe($subscriber);
 
-        return new Response(Subscriber::UNSUBSCRIBE_SUCCESS);
+        return $this->json(['message' => Subscriber::UNSUBSCRIBE_SUCCESS]);
     }
 }

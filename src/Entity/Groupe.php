@@ -10,10 +10,11 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[UniqueEntity('title')]
-#[UniqueEntity('role')]
+#[UniqueEntity(fields: 'title', message: "Ce titre est déjà utilisé !")]
+#[UniqueEntity(fields: 'role', message: "Ce role est déjà utilisé !")]
 #[ORM\Entity(repositoryClass: GroupeRepository::class)]
 #[ApiResource(
     operations: [
@@ -29,9 +30,11 @@ class Groupe
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(['Read:User'])]
     #[ORM\Column(length: 255, unique: true)]
     private ?string $title = null;
 
+    #[Groups(['Read:User'])]
     #[Assert\Regex(
         pattern: '/^ROLE_/',
         message: 'Le rôle ne respecte pas les conditions !',

@@ -2,14 +2,28 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
+#[ApiResource(
+    operations: [
+        new Get(),
+        new GetCollection(
+            normalizationContext: ['groups' => ['Read:User']]
+        )
+    ],
+    security: "is_granted('ROLE_SUPER_ADMIN')"
+)]
 #[ORM\Table(name: 'account')]
-#[UniqueEntity('email')]
+#[UniqueEntity(fields: 'email', message: "Cette adresse mail existe déjà !")]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -18,6 +32,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(['Read:User'])]
+    #[Assert\Email(message: "L'adresse {{ value }} n'est pas valide !")]
     #[ORM\Column(length: 255, unique: true)]
     private ?string $email = null;
 
@@ -28,14 +44,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column]
+    #[Groups(['Read:User'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column]
+    #[Groups(['Read:User'])]
     private ?bool $enabled = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['Read:User'])]
     private ?\DateTimeImmutable $lastLogin = null;
 
+    #[Groups(['Read:User'])]
     #[ORM\ManyToOne(inversedBy: 'users')]
     private ?Groupe $groupe = null;
 

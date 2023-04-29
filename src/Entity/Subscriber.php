@@ -13,7 +13,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[UniqueEntity('email')]
+#[UniqueEntity(fields: 'email', message: "Cette adresse mail existe déjà !")]
 #[ORM\Entity(repositoryClass: SubscriberRepository::class)]
 #[ApiResource(
     operations: [
@@ -21,6 +21,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             denormalizationContext: ['groups' => ['Post:Subscriber']]
         ),
         new GetCollection(
+            normalizationContext: ['groups' => ['Read:Subscriber']],
             security: "is_granted('ROLE_SUPER_ADMIN')"
         ),
         new Get(
@@ -45,20 +46,23 @@ class Subscriber
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(['Post:Subscriber'])]
+    #[Groups(['Post:Subscriber', 'Read:Subscriber'])]
     #[ORM\Column(type: 'string', length: 255, unique: true)]
-    #[Assert\Email]
+    #[Assert\Email(message: "L'adresse {{ value }} n'est pas valide !")]
     private ?string $email = null;
 
+    #[Groups(['Read:Subscriber'])]
     #[ORM\Column]
     private ?\DateTimeImmutable $subscribAt = null;
 
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $unsubscribAt = null;
 
+    // Utile pour la désincription à la newsletter
     #[ORM\Column(length: 255)]
     private ?string $tokenID = null;
 
+    #[Groups(['Read:Subscriber'])]
     #[ORM\Column]
     private ?bool $enabled = true;
 
