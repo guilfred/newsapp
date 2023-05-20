@@ -1,7 +1,7 @@
 # api/config/packages/api_platform.yaml
 api_platform:
-    title: 'API title'
-    description: 'Newsapp description'
+    title: 'API newsletter'
+    description: 'Newsapp - Api de newsletter'
     version: '1.0.0'
     swagger:
         api_keys:

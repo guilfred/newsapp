@@ -19,7 +19,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(
     operations: [
         new Get(),
-        new GetCollection()
+        new GetCollection(
+            normalizationContext: ['groups' => ['Get:Groupe']]
+        )
     ],
     security: "is_granted('ROLE_SUPER_ADMIN')"
 )]
@@ -30,11 +32,11 @@ class Groupe
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(['Read:User'])]
+    #[Groups(['Read:User', 'Get:Groupe'])]
     #[ORM\Column(length: 255, unique: true)]
     private ?string $title = null;
 
-    #[Groups(['Read:User'])]
+    #[Groups(['Read:User', 'Get:Groupe'])]
     #[Assert\Regex(
         pattern: '/^ROLE_/',
         message: 'Le rôle ne respecte pas les conditions !',

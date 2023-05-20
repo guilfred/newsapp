@@ -8,7 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class UnsubscribeAction extends AbstractController
+class UnsubscribeController extends AbstractController
 {
     /**
      * @param Request              $request
@@ -22,16 +22,28 @@ class UnsubscribeAction extends AbstractController
         $action = $request->query->get('action');
 
         if (!isset($token) || !isset($action) || $action !== 'unsubscribe') {
-            return $this->json(['message' => Subscriber::UNSUBSCRIBE_FAILED]);
+            return $this->json(
+                ['status' => 'failed', 'message' => Subscriber::UNSUBSCRIBE_FAILED],
+                Response::HTTP_BAD_REQUEST,
+                ['Content-Type' => 'application/json']
+            );
         }
 
         $subscriber = $subscriberRepository->findOneBy(['tokenID' => $token]);
         if (!$subscriber) {
-            return $this->json(['message' => Subscriber::UNSUBSCRIBE_FAILED]);
+            return $this->json(
+                ['status' => 'failed', 'message' => Subscriber::UNSUBSCRIBE_FAILED],
+                Response::HTTP_BAD_REQUEST,
+                ['Content-Type' => 'application/json']
+            );
         }
 
         $subscriberRepository->unsubscribe($subscriber);
 
-        return $this->json(['message' => Subscriber::UNSUBSCRIBE_SUCCESS]);
+        return $this->json(
+            ['status' => 'done', 'message' => Subscriber::UNSUBSCRIBE_SUCCESS],
+            Response::HTTP_OK,
+            ['Content-Type' => 'application/json']
+        );
     }
 }
