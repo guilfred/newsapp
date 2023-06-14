@@ -19,8 +19,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[UniqueEntity(fields: 'email', message: "Cette adresse mail existe déjà !")]
 #[ORM\Entity(repositoryClass: SubscriberRepository::class)]
-#[ApiFilter(SearchFilter::class, properties: ['enabled', 'email' => 'partial'])]
-#[ApiFilter(OrderFilter::class, properties: ['id', 'subscribAt'], arguments: ['orderParameterName' => 'ord'])]
 #[ApiResource(
     operations: [
         new Post(
