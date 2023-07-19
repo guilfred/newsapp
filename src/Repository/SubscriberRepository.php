@@ -104,5 +104,34 @@ class SubscriberRepository extends ServiceEntityRepository
         return $dataErrors;
     }
 
+    /**
+     * @return Subscriber[]
+     */
+    public function getDisableSubscribers(): array
+    {
+        return $this
+            ->createQueryBuilder('s')
+            ->where('s.enabled = :state')
+            ->setParameter('state', false)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    /**
+     * @return int
+     */
+    public function removeDisableSubscribers(): int
+    {
+        $subscribers = $this->getDisableSubscribers();
+        if (!empty($subscribers)) {
+            foreach ($subscribers as $subscriber) {
+                $this->remove($subscriber);
+            }
+            $this->_em->flush();
+
+            return count($subscribers);
+        }
+    }
 
 }

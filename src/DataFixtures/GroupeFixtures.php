@@ -17,11 +17,7 @@ class GroupeFixtures extends Fixture implements FixtureGroupInterface
         [
             'title' => 'Administrateur',
             'role' => 'ROLE_ADMIN'
-        ],
-        [
-            'title' => 'Guest',
-            'role' => 'ROLE_GUEST'
-        ],
+        ]
     ];
 
     /**

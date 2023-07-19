@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use App\Controller\User\UserController;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Repository\UserRepository;
@@ -15,12 +16,20 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ApiResource(
     operations: [
-        new Get(),
+        new Get(security: "is_granted('ROLE_SUPER_ADMIN')"),
         new GetCollection(
-            normalizationContext: ['groups' => ['Read:User']]
+            normalizationContext: ['groups' => ['Read:User']],
+            security: "is_granted('ROLE_SUPER_ADMIN')"
+        ),
+        new Get(
+            uriTemplate: '/me',
+            controller: UserController::class,
+            security: "is_granted('ROLE_USER')",
+            read: false,
+            name: 'me'
         )
     ],
-    security: "is_granted('ROLE_SUPER_ADMIN')"
+    security: "is_granted('ROLE_USER')"
 )]
 #[ORM\Table(name: 'account')]
 #[UniqueEntity(fields: 'email', message: "Cette adresse mail existe déjà !")]
